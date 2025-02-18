@@ -1,6 +1,10 @@
 <!-- TagConsumer.vue -->
 <script setup lang="ts">
-import { TAG_CONTEXT_KEY } from "../utils/tagging";
+import {
+  TAG_CONTEXT_KEY,
+  type TagContext,
+  type TagNode,
+} from "../utils/tagging";
 import { reactive, provide } from "vue";
 
 const root = reactive<TagNode>({
@@ -36,6 +40,9 @@ defineExpose({
     }
 
     return findNode(root.children, path);
+  },
+  getTagTree() {
+    return root;
   },
 });
 </script>

@@ -8,7 +8,11 @@ import {
   onMounted,
   onBeforeUnmount,
 } from "vue";
-import { TAG_CONTEXT_KEY } from "../utils/tagging";
+import {
+  TAG_CONTEXT_KEY,
+  type TagContext,
+  type TagNode,
+} from "../utils/tagging";
 
 const props = defineProps<{
   name: string;
