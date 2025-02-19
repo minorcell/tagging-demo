@@ -24,7 +24,7 @@ const instance = getCurrentInstance();
 // 当前节点的子节点管理
 const children = reactive<TagNode[]>([]);
 
-// 提供给子组件的上下文
+// 提供给子组件的上下文，用于子组件注册到当前节点和从当前节点移除
 const currentContext: TagContext = {
   addChild(node: TagNode) {
     children.push(node);
@@ -44,10 +44,12 @@ const selfNode = reactive<TagNode>({
   children,
 });
 
+// 挂载时注册到父节点
 onMounted(() => {
   parentContext?.addChild(selfNode);
 });
 
+// 卸载时从父节点移除
 onBeforeUnmount(() => {
   parentContext?.removeChild(selfNode);
 });

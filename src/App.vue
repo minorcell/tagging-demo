@@ -1,24 +1,25 @@
 <script setup>
 import { ref } from "vue";
 import Tag from "./components/Tag.vue";
-import TagConsumer from "./components/TagConsumer.vue";
+import RootTag from "./components/RootTag.vue";
 import ClickToRender from "./components/ClickToRender.vue";
+import { useTagFinder } from "./hooks/useTagFinder";
 
-const consumerRef = ref();
+const { find, getTagTree } = useTagFinder();
 
 function log() {
-  const instance = consumerRef.value?.find(["infoBox", "confirm"]);
-  console.log(instance.subTree.children[0].el);
+  const instance = find(["infoBox", "confirm"]);
+  console.log(instance?.subTree.children[0].el);
 }
 
 function logTree() {
-  const tree = consumerRef.value?.getTagTree();
+  const tree = getTagTree();
   console.log(tree);
 }
 </script>
 
 <template>
-  <TagConsumer ref="consumerRef">
+  <RootTag ref="consumerRef">
     <Tag name="infoBox">
       <div class="info-box">
         <Tag name="confirm">
@@ -47,7 +48,7 @@ function logTree() {
       </div>
     </Tag>
     <ClickToRender />
-  </TagConsumer>
+  </RootTag>
 </template>
 
 <style scoped>
