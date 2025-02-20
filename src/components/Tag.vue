@@ -1,4 +1,3 @@
-<!-- Tag.vue -->
 <script setup lang="ts">
 import {
   inject,
@@ -18,7 +17,7 @@ const props = defineProps<{
   name: string;
 }>();
 
-const parentContext = inject<TagContext>(TAG_CONTEXT_KEY, null);
+const parentContext = inject<TagContext>(TAG_CONTEXT_KEY);
 const instance = getCurrentInstance();
 
 // 当前节点的子节点管理

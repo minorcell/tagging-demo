@@ -1,4 +1,3 @@
-<!-- TagConsumer.vue -->
 <script setup lang="ts">
 import {
   TAG_CONTEXT_KEY,
@@ -14,27 +13,28 @@ const root = reactive<TagNode>({
   children: [],
 });
 
-const find = (path: string[]) => {
+const getElement = (path: string) => {
+  const pathArray = path.split(" ");
+
   function findNode(nodes: TagNode[], remainingPath: string[]): any {
     if (!remainingPath.length) return null;
     const targetName = remainingPath[0];
     const node = nodes.find((n) => n.name === targetName);
+
     if (!node) return null;
+
     return remainingPath.length === 1
-      ? node.instance
+      ? node.instance.subTree.children[0].el
       : findNode(node.children, remainingPath.slice(1));
   }
-  return findNode(root.children, path);
+
+  return findNode(root.children, pathArray);
 };
 
-const api = {
-  find,
-  getTagTree: () => root,
-};
-
-// 注册全局 API
 onMounted(() => {
-  tagApi.value = api;
+  tagApi.value = {
+    getElement,
+  };
 });
 
 onBeforeUnmount(() => {

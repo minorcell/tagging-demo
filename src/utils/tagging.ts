@@ -11,11 +11,12 @@ export interface TagContext {
   removeChild: (node: TagNode) => void;
 }
 
-export const TAG_CONTEXT_KEY = Symbol("tag_context");
-export const TAG_API_KEY = Symbol("tagApi"); // 新增 API Key
+export interface TagApi {
+  getElement: (path: string) => HTMLElement | null;
+}
 
-// 新增全局 API 引用
+export const TAG_CONTEXT_KEY = Symbol("tag_context");
+
 export const tagApi = ref<{
-  find: (path: string[]) => any;
-  getTagTree: () => TagNode;
+  getElement: (path: string) => HTMLElement | null;
 } | null>(null);

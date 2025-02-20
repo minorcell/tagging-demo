@@ -1,94 +1,67 @@
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
 import Tag from "./components/Tag.vue";
-import RootTag from "./components/RootTag.vue";
-import ClickToRender from "./components/ClickToRender.vue";
-import { useTagFinder } from "./hooks/useTagFinder";
+import RootTag from "./components/TagRoot.vue";
+import { useTag } from "./hooks/useTag";
 
-const { find, getTagTree } = useTagFinder();
+const { getElement } = useTag();
 
-function log() {
-  const instance = find(["infoBox", "confirm"]);
-  console.log(instance?.subTree.children[0].el);
-}
+const handleCheck = () => {
+  const checkbutton = getElement("editorbox check");
+  console.log(checkbutton);
+};
 
-function logTree() {
-  const tree = getTagTree();
-  console.log(tree);
-}
+const logCodeContext = () => {
+  const pre = getElement("editorbox pre");
+  console.log(pre);
+};
 </script>
 
 <template>
-  <RootTag ref="consumerRef">
-    <Tag name="infoBox">
-      <div class="info-box">
-        <Tag name="confirm">
-          <button @click="log">点击打印我</button>
-          <button @click="logTree">点击打印tagTree</button>
-        </Tag>
-      </div>
-    </Tag>
-    <Tag name="textBox">
-      <div class="info-box">
-        <Tag name="text">
-          <p>
-            这是一段文本
-            <Tag name="special">
-              <span>特殊文本</span>
-            </Tag>
-          </p>
-          <Tag name="code">
-            <pre>
-              <code>
-                console.log('Hello, World!')
-              </code>
-            </pre>
+  <RootTag>
+    <Tag name="editorbox">
+      <div class="editor">
+        <h2>Coding Here</h2>
+        <div class="options">
+          <Tag name="check">
+            <button @click="handleCheck">Check</button>
           </Tag>
+          <Tag name="logpre">
+            <button @click="logCodeContext">logpre</button>
+          </Tag>
+        </div>
+        <Tag name="pre">
+          <pre>
+            <Tag name="code">
+              <code>console.log("Hello, World!");</code>
+            </Tag>
+          </pre>
         </Tag>
       </div>
     </Tag>
-    <ClickToRender />
   </RootTag>
 </template>
 
 <style scoped>
-.info-box {
+.editor {
+  border: 1px solid blue;
+  border-radius: 8px;
   padding: 10px;
-  border: 1px solid #ddd;
-  margin: 10px 0;
+  margin: 10px;
 }
 
 button {
   margin-right: 10px;
 }
 
-span {
-  color: red;
-}
-
-span::before {
-  content: "【";
-}
-
-span::after {
-  content: "】";
-}
-
-span:hover {
-  color: blue;
-}
-
-span:hover::before {
-  content: "《";
-}
-
-span:hover::after {
-  content: "》";
-}
-
 pre {
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-radius: 5px;
+  border: 1px solid blue;
+  border-radius: 8px;
+  padding: 0 10px;
+  background-color: #f0f0f0;
+  overflow: auto;
+}
+
+code {
+  width: 100%;
 }
 </style>
