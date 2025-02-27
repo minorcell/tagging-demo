@@ -68,6 +68,7 @@ button {
   border: 1px solid blue;
   border-radius: 8px;
   background-color: #f0f0f0;
+  cursor: pointer;
 }
 
 pre {
