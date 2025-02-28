@@ -24,6 +24,11 @@ const highlightRect = ref<HighlightRect>({
   height: 0,
 });
 
+const zIndex = ref(9999);
+
+const screenWidth = ref(window.innerWidth);
+const screenHeight = ref(window.innerHeight);
+
 /** 获取目标元素的真实坐标 */
 const updateHighlightRect = () => {
   const element = getElement(props.highlightElementPath);
@@ -37,9 +42,6 @@ const updateHighlightRect = () => {
     };
   }
 };
-
-const screenWidth = ref(window.innerWidth);
-const screenHeight = ref(window.innerHeight);
 
 /**
  * 生成带圆角矩形的 Path（SVG 路径）
@@ -116,32 +118,44 @@ onBeforeUnmount(() => {
 
 <template>
   <Transition>
-    <svg
-      v-if="visible"
-      class="svg-mask"
-      :width="screenWidth"
-      :height="screenHeight"
-      :viewBox="`0 0 ${screenWidth} ${screenHeight}`"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="none"
-    >
-      <path
-        :d="svgPath"
-        fill="rgba(0, 0, 0, 0.5)"
-        fill-rule="evenodd"
-        pointer-events="fill"
-      />
-    </svg>
+    <div v-if="visible" class="mask">
+      <svg
+        class="svg-mask"
+        :width="screenWidth"
+        :height="screenHeight"
+        :viewBox="`0 0 ${screenWidth} ${screenHeight}`"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        :style="{
+          zIndex: zIndex,
+        }"
+      >
+        <path
+          :d="svgPath"
+          fill="rgba(0, 0, 0, 0.5)"
+          fill-rule="evenodd"
+          pointer-events="fill"
+        />
+      </svg>
+      <slot :highlightRect="highlightRect" :z-index="zIndex" />
+    </div>
   </Transition>
 </template>
 
 <style scoped>
+.mask {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .svg-mask {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 9999;
-  pointer-events: none; /* svg 本身不拦截，但内部 path 可以决定怎么拦截 */
+  pointer-events: none;
   width: 100vw;
   height: 100vh;
 }

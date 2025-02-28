@@ -2,7 +2,7 @@
 import Tag from "./components/Tag.vue";
 import RootTag from "./components/TagRoot.vue";
 import Mask from "./components/Mask.vue";
-import { useTag } from "./hooks/useTag";
+import { useTag } from "./utils/tagging";
 import { ref } from "vue";
 
 const { getElement } = useTag();
@@ -48,8 +48,19 @@ const visible = ref(false);
         </Tag>
       </div>
     </Tag>
-    <Mask :visible="visible" highlight-element-path="editorbox check">
-      <button class="button" @click="closeMask">close mask</button>
+    <Mask
+      :visible="visible"
+      highlight-element-path="editorbox check"
+      v-slot="defaultProps"
+    >
+      <button
+        @click="closeMask"
+        :style="{
+          zIndex: defaultProps.zIndex + 10,
+        }"
+      >
+        close mask
+      </button>
     </Mask>
   </RootTag>
 </template>
@@ -63,12 +74,10 @@ const visible = ref(false);
 }
 
 button {
-  margin-right: 10px;
-  padding: 10px 20px;
-  border: 1px solid blue;
+  padding: 10px;
+  margin: 10px;
   border-radius: 8px;
-  background-color: #f0f0f0;
-  cursor: pointer;
+  border: 1px solid blue;
 }
 
 pre {

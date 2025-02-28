@@ -20,3 +20,16 @@ export const TAG_CONTEXT_KEY = Symbol("tag_context");
 export const tagApi = ref<{
   getElement: (path: string) => HTMLElement | null;
 } | null>(null);
+
+export function useTag() {
+  const getElement = (path: string) => {
+    if (!tagApi.value) {
+      throw new Error("TagConsumer not mounted");
+    }
+    return tagApi.value.getElement(path);
+  };
+
+  return {
+    getElement,
+  };
+}
