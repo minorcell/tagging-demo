@@ -6,9 +6,9 @@ export function useResizeObserver(
   const resizeObserver = ref<ResizeObserver | null>(null);
 
   /** 开始监听元素尺寸变化 */
-  const startObserving = (element: HTMLElement | null) => {
+  const startResizeObserving = (element: HTMLElement | null) => {
     if (!element) return;
-    stopObserving(); // 先移除旧的监听
+    stopResizeObserving(); // 先移除旧的监听
     resizeObserver.value = new ResizeObserver((entries) => {
       for (let entry of entries) {
         callback(entry);
@@ -18,14 +18,17 @@ export function useResizeObserver(
   };
 
   /** 停止监听 */
-  const stopObserving = () => {
+  const stopResizeObserving = () => {
     resizeObserver.value?.disconnect();
     resizeObserver.value = null;
   };
 
   onBeforeUnmount(() => {
-    stopObserving();
+    stopResizeObserving();
   });
 
-  return { startObserving, stopObserving };
+  return {
+    startResizeObserving,
+    stopResizeObserving,
+  };
 }

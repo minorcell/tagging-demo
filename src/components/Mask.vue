@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, computed, onBeforeUnmount } from "vue";
 import { useTag } from "../hooks/useTag";
 import { useResizeObserver } from "../hooks/useResizeObserver";
+import { useElementPosition } from "../hooks/useElementPosition";
 
 type HighlightRect = {
   left: number;
@@ -16,8 +17,11 @@ const props = defineProps<{
 }>();
 
 const { getElement } = useTag();
-const { startObserving, stopObserving } =
+const { startResizeObserving, stopResizeObserving } =
   useResizeObserver(updateHighlightRect);
+const { startPositionObserving, stopPositionObserving } =
+  useElementPosition(updateHighlightRect);
+
 const highlightRect = ref<HighlightRect>({
   left: 0,
   top: 0,
@@ -93,7 +97,9 @@ watch(
   () => {
     if (props.visible) {
       updateHighlightRect();
-      startObserving(getElement(props.highlightElementPath));
+      const element = getElement(props.highlightElementPath);
+      startResizeObserving(element);
+      startPositionObserving(element);
     }
   }
 );
@@ -103,9 +109,12 @@ watch(
   (newVal) => {
     if (newVal) {
       updateHighlightRect();
-      startObserving(getElement(props.highlightElementPath));
+      const element = getElement(props.highlightElementPath);
+      startResizeObserving(element);
+      startPositionObserving(element);
     } else {
-      stopObserving();
+      stopResizeObserving();
+      stopPositionObserving();
     }
   }
 );
@@ -113,7 +122,9 @@ watch(
 onMounted(() => {
   if (props.visible) {
     updateHighlightRect();
-    startObserving(getElement(props.highlightElementPath));
+    const element = getElement(props.highlightElementPath);
+    startPositionObserving(element);
+    startResizeObserving(element);
   }
   window.addEventListener("resize", () => {
     screenWidth.value = window.innerWidth;
@@ -122,7 +133,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  stopObserving();
+  stopResizeObserving();
+  stopPositionObserving();
   window.removeEventListener("resize", () => {
     screenWidth.value = window.innerWidth;
     screenHeight.value = window.innerHeight;
