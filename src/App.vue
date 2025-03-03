@@ -6,27 +6,51 @@ import { useTag } from "./utils/tagging";
 import { ref } from "vue";
 
 const { getElement } = useTag();
+const visible = ref(false);
 
-const handleCheck = () => {
+function handleCheck() {
   const checkbutton = getElement("editorbox check");
   console.log(checkbutton);
-};
+}
 
-const logCodeContext = () => {
+function logCodeContext() {
   const pre = getElement("editorbox pre");
   console.log(pre);
-};
-const closeMask = () => {
-  visible.value = false;
-};
+}
 
-const visible = ref(false);
+function closeMask() {
+  visible.value = false;
+  const checkbutton = getElement("editorbox check");
+  if (checkbutton) {
+    const styles = {
+      position: "static",
+      top: "auto",
+      left: "auto",
+      transform: "scale(1)",
+    };
+    Object.assign(checkbutton.style, styles);
+  }
+}
 
 function changeSize() {
   const checkbutton = getElement("editorbox check");
   if (checkbutton) {
-    checkbutton.style.width = "200px";
-    checkbutton.style.height = "100px";
+    const styles = {
+      transform: "scale(2)",
+    };
+    Object.assign(checkbutton.style, styles);
+  }
+}
+
+function moveTarget() {
+  const checkbutton = getElement("editorbox check");
+  if (checkbutton) {
+    const styles = {
+      position: "absolute",
+      top: "300px",
+      left: "300px",
+    };
+    Object.assign(checkbutton.style, styles);
   }
 }
 </script>
@@ -61,22 +85,11 @@ function changeSize() {
       highlight-element-path="editorbox check"
       v-slot="defaultProps"
     >
-      <button
-        @click="closeMask"
-        :style="{
-          zIndex: defaultProps.slotInfo.zIndex + 10,
-        }"
-      >
-        close mask
-      </button>
-      <button
-        @click="changeSize"
-        :style="{
-          zIndex: defaultProps.slotInfo.zIndex + 10,
-        }"
-      >
-        change size
-      </button>
+      <div class="slot-container">
+        <button @click="closeMask">close mask</button>
+        <button @click="changeSize">change size</button>
+        <button @click="moveTarget">move target</button>
+      </div>
     </Mask>
   </RootTag>
 </template>
@@ -87,6 +100,12 @@ function changeSize() {
   border-radius: 8px;
   padding: 10px;
   margin: 10px;
+}
+
+.slot-container {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #fff;
 }
 
 button {
