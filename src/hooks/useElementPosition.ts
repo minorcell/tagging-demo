@@ -6,7 +6,7 @@ function useElementPosition(callback: (rect: DOMRect) => void) {
   let lastRect: DOMRect | null = null;
   let rafId: number | null = null;
 
-  /** 轮询监听元素位置信息 */
+  /** 使用requestAnimationFrame轮询监听元素位置信息 */
   const pollPosition = (element: HTMLElement) => {
     if (rafId) cancelAnimationFrame(rafId);
     const check = () => {
