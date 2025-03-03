@@ -21,6 +21,14 @@ const closeMask = () => {
 };
 
 const visible = ref(false);
+
+function changeSize() {
+  const checkbutton = getElement("editorbox check");
+  if (checkbutton) {
+    checkbutton.style.width = "200px";
+    checkbutton.style.height = "100px";
+  }
+}
 </script>
 
 <template>
@@ -56,10 +64,18 @@ const visible = ref(false);
       <button
         @click="closeMask"
         :style="{
-          zIndex: defaultProps.zIndex + 10,
+          zIndex: defaultProps.slotInfo.zIndex + 10,
         }"
       >
         close mask
+      </button>
+      <button
+        @click="changeSize"
+        :style="{
+          zIndex: defaultProps.slotInfo.zIndex + 10,
+        }"
+      >
+        change size
       </button>
     </Mask>
   </RootTag>
