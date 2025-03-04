@@ -143,7 +143,7 @@ function createRoundedRectPath(x, y, w, h, r) {
 
    对比新旧 `DOMRect` 值，仅当关键属性（`top/left/width/height`）变化时才更新 `rect.value`，避免不必要的触发。
 
-#### 四大监听策略协同工作
+#### 三大监听策略协同工作
 
 通过以下四类观察器覆盖所有可能引发元素位置变化的场景：
 
@@ -159,10 +159,6 @@ function createRoundedRectPath(x, y, w, h, r) {
 
    监听元素 进入/离开视口或滚动容器 时的位置变化，触发 `updateRect`。
 
-4. 轮询检测（`requestAnimationFrame`）​
-
-   通过 `pollPosition` 函数持续轮询元素位置，捕捉 `​CSS` 变换（如 `transform`）​​ 等无法被上述观察器捕获的变化。
-
 #### 生命周期与资源清理
 
 1. `watch` 监听元素引用:
@@ -176,18 +172,9 @@ function createRoundedRectPath(x, y, w, h, r) {
 - `resizeObserver.disconnect()`
 - `mutationObserver.disconnect()`
 - `intersectionObserver.disconnect()`
-- 取消轮询的 `cancelAnimationFrame` 避免内存泄漏。
-
-3. 组件卸载处理
-
-   通过 `onBeforeUnmount` 确保组件销毁时取消所有动画帧请求。
 
 #### 性能优化策略
 
 1. 防抖对比
 
    `updateRect` 通过对比新旧 `DOMRect` 的四个关键属性，避免重复触发无关更新。
-
-2. 按需轮询
-
-   仅在元素存在时启动 `requestAnimationFrame` 轮询，通过 `cancelPoll` 函数动态管理资源。

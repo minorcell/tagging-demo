@@ -46,9 +46,7 @@ function moveTarget() {
   const checkbutton = getElement("editorbox check");
   if (checkbutton) {
     const styles = {
-      position: "absolute",
-      top: "300px",
-      left: "300px",
+      transform: "translate(100px, 100px)",
     };
     Object.assign(checkbutton.style, styles);
   }
@@ -80,11 +78,8 @@ function moveTarget() {
         </Tag>
       </div>
     </Tag>
-    <Mask
-      :visible="visible"
-      highlight-element-path="editorbox check"
-      v-slot="defaultProps"
-    >
+    <Mask :visible="visible" highlight-element-path="editorbox check">
+      <!-- Mask 提供一个作用于插槽 v-slot="defaultProps" 可供使用方定制样式等 -->
       <div class="slot-container">
         <button @click="closeMask">close mask</button>
         <button @click="changeSize">change size</button>
