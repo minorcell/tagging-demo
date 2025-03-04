@@ -14,21 +14,49 @@ const root = reactive<TagNode>({
 });
 
 const getElement = (path: string) => {
-  const pathArray = path.split(" ");
+  const pathTokens = path.trim().split(/\s+/);
+  if (pathTokens.length === 0) return null;
 
-  function findNode(nodes: TagNode[], remainingPath: string[]): any {
-    if (!remainingPath.length) return null;
-    const targetName = remainingPath[0];
-    const node = nodes.find((n) => n.name === targetName);
+  // 模糊搜索
+  function fuzzySearch(rootNodes: TagNode[]): TagNode | null {
+    const queue: { node: TagNode; index: number }[] = rootNodes.map((node) => ({
+      node,
+      index: 0,
+    }));
 
-    if (!node) return null;
+    while (queue.length > 0) {
+      const { node, index } = queue.shift()!;
 
-    return remainingPath.length === 1
-      ? node.instance.subTree.children[0].el
-      : findNode(node.children, remainingPath.slice(1));
+      // 匹配成功时
+      if (node.name === pathTokens[index]) {
+        // 完全匹配时返回结果
+        if (index === pathTokens.length - 1) {
+          return node;
+        }
+        // 深度优先：将子节点插入队列前部
+        queue.unshift(
+          ...node.children.map((child) => ({
+            node: child,
+            index: index + 1,
+          }))
+        );
+      }
+
+      // 无论是否匹配都继续搜索（允许跳过节点）
+      // 广度优先：将子节点插入队列后部
+      queue.push(
+        ...node.children.map((child) => ({
+          node: child,
+          index,
+        }))
+      );
+    }
+    return null;
   }
 
-  return findNode(root.children, pathArray);
+  // 执行搜索并返回结果
+  const foundNode = fuzzySearch(root.children);
+  return foundNode?.instance?.subTree?.children?.[0]?.el || null;
 };
 
 onMounted(() => {
