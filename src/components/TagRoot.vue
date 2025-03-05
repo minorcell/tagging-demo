@@ -19,6 +19,9 @@ const getElement = (path: string) => {
 
   // 模糊搜索
   function fuzzySearch(rootNodes: TagNode[]): TagNode | null {
+    /**
+     * 维护一个队列，作为 搜索队列，存储待搜索的节点(node)及其匹配进度(index)
+     */
     const queue: { node: TagNode; index: number }[] = rootNodes.map((node) => ({
       node,
       index: 0,
@@ -27,13 +30,13 @@ const getElement = (path: string) => {
     while (queue.length > 0) {
       const { node, index } = queue.shift()!;
 
-      // 匹配成功时
+      // 匹配成功时，如果 index 达到 pathTokens.length - 1，表示完全匹配，直接返回该节点。
       if (node.name === pathTokens[index]) {
-        // 完全匹配时返回结果
+        // 如果完全匹配，则返回结果
         if (index === pathTokens.length - 1) {
           return node;
         }
-        // 深度优先：将子节点插入队列前部
+        // 否则，采用 DFS，优先深入当前分支，这有助于快速找到“连续匹配”的路径。
         queue.unshift(
           ...node.children.map((child) => ({
             node: child,
@@ -42,8 +45,8 @@ const getElement = (path: string) => {
         );
       }
 
-      // 无论是否匹配都继续搜索（允许跳过节点）
-      // 广度优先：将子节点插入队列后部
+      // 无论当前节点是否匹配，都将其子节点以原始匹配进度（未递增 index）的方式加入队列，
+      // 这样即便当前分支走不通，也能从旁边的分支找出正确的路径
       queue.push(
         ...node.children.map((child) => ({
           node: child,
@@ -54,7 +57,6 @@ const getElement = (path: string) => {
     return null;
   }
 
-  // 执行搜索并返回结果
   const foundNode = fuzzySearch(root.children);
   return foundNode?.instance?.subTree?.children?.[0]?.el || null;
 };

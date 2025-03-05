@@ -76,10 +76,10 @@ function moveTarget() {
             </div>
             <Tag name="pre">
               <pre>
-            <Tag name="code">
-              <code>console.log("Hello, World!");</code>
-            </Tag>
-          </pre>
+              <Tag name="code">
+                <code>console.log("Hello, World!");</code>
+              </Tag>
+              </pre>
             </Tag>
           </div>
         </Tag>
