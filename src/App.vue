@@ -3,10 +3,11 @@ import Tag from "./components/Tag.vue";
 import RootTag from "./components/TagRoot.vue";
 import Mask from "./components/Mask.vue";
 import InfoBox from "./components/InfoBox.vue";
+import Modal from "./components/Modal.vue";
 import { useTag } from "./utils/tagging";
 import { ref } from "vue";
 
-const { getElement } = useTag();
+const { getElement, getInstance } = useTag();
 const visible = ref(false);
 const currentHighlightElementPath = ref("editorbox check");
 
@@ -54,6 +55,11 @@ function moveTarget() {
     Object.assign(checkbutton.style, styles);
   }
 }
+
+function logInstance() {
+  const instance = getInstance("modal");
+  console.log(instance);
+}
 </script>
 
 <template>
@@ -81,6 +87,21 @@ function moveTarget() {
               </Tag>
               </pre>
             </Tag>
+            <Tag name="modal">
+              <Modal
+                v-model:isvisiable="visible"
+                @confirm="
+                  () => {
+                    console.log('confirm');
+                  }
+                "
+                @close="
+                  () => {
+                    console.log('close');
+                  }
+                "
+              />
+            </Tag>
           </div>
         </Tag>
 
@@ -97,6 +118,7 @@ function moveTarget() {
         <button @click="closeMask">close mask</button>
         <button @click="changeSize">change size</button>
         <button @click="moveTarget">move target</button>
+        <button @click="logInstance">log Instance</button>
         <button @click="currentHighlightElementPath = 'header close'">
           模糊查找 close
         </button>
