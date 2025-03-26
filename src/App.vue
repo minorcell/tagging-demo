@@ -4,7 +4,7 @@ import RootTag from "./components/TagRoot.vue";
 import Mask from "./components/Mask.vue";
 import InfoBox from "./components/InfoBox.vue";
 import Modal from "./components/Modal.vue";
-import TaggingSelector from "./components/TaggingSelector.vue";
+import TagSelector from "./components/TagSelector.vue";
 import { useTag } from "./utils/tagging";
 import { ref } from "vue";
 
@@ -135,7 +135,7 @@ function logInstance() {
         </button>
       </div>
     </Mask>
-    <TaggingSelector :active="selectorActive" />
+    <TagSelector :active="selectorActive" />
   </RootTag>
 </template>
 

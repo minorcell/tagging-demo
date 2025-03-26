@@ -12,6 +12,7 @@ let elementToNode: Map<HTMLElement, TagNode> | null = null;
 let nodeToPath: Map<TagNode, string> | null = null;
 const currentPath = ref<string | null>(null);
 const currentElementRef = ref<HTMLElement | null>(null);
+const currentPathRef = ref<HTMLElement | null>(null);
 
 function findNearestTagElement(el: HTMLElement): HTMLElement | null {
   let current: HTMLElement | null = el;
@@ -58,6 +59,12 @@ function createMaskToTaggedElement(element: HTMLElement | null) {
   });
 }
 
+function copyToClipboard(e: KeyboardEvent) {
+  if (currentPath.value && e.key === "c") {
+    navigator.clipboard.writeText(currentPath.value);
+  }
+}
+
 watch(
   () => props.active,
   (newVal) => {
@@ -67,8 +74,10 @@ watch(
       elementToNode = eToNode;
       nodeToPath = nToPath;
       window.addEventListener("mouseover", handleMouseOver);
+      window.addEventListener("keydown", copyToClipboard);
     } else {
       window.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener("keydown", copyToClipboard);
       elementToNode = null;
       nodeToPath = null;
       currentPath.value = null;
@@ -79,13 +88,14 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener("mouseover", handleMouseOver);
+  window.removeEventListener("keydown", copyToClipboard);
 });
 </script>
 
 <template>
   <Teleport to="body" v-if="props.active">
     <div ref="currentElementRef" class="tagging-selector" v-if="currentPath">
-      <span class="current-path">{{ currentPath }}</span>
+      <span ref="currentPathRef" class="current-path">{{ currentPath }}</span>
     </div>
   </Teleport>
 </template>
@@ -95,6 +105,7 @@ onBeforeUnmount(() => {
   position: fixed;
   border: 2px solid #07c0cf;
   border-radius: 5px;
+  border-top-left-radius: 0;
   background: rgba(7, 192, 207, 0.5);
   pointer-events: none;
   transition: all 0.2s;
@@ -102,14 +113,15 @@ onBeforeUnmount(() => {
 }
 
 .current-path {
-  color: black;
+  color: white;
   position: absolute;
   bottom: 100%;
-  right: 0;
+  left: -2px;
   background: rgba(7, 192, 207);
   border: 2px solid #07c0cf;
   white-space: nowrap;
   padding: 2px 4px;
   border-radius: 4px;
+  border-bottom-left-radius: 0;
 }
 </style>
