@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
-import { useTag } from "../hooks/useTag";
+import { useTag } from "../utils/tagging";
 import { useElementRect } from "../utils/dom";
 
 type HighlightRect = {

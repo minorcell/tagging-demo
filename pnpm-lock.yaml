@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@cp-vuedir/core':
+        specifier: ^0.3.3
+        version: 0.3.3(vue@3.5.13(typescript@5.7.3))
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -49,6 +52,16 @@ packages:
   '@babel/types@7.26.9':
     resolution: {integrity: sha512-Y3IR1cRnOxOCDvMmNiym7XpXQ93iGDDPHx+Zj+NM+rg0fBaShfQLkg+hKPaZCEvg5N/LeCo4+Rj/i3FuJsIQaw==}
     engines: {node: '>=6.9.0'}
+
+  '@cp-vuedir/core@0.3.3':
+    resolution: {integrity: sha512-i0Bg5/+4edKtkK2DJAiwSwnZhjO3sSU2IsSBsBOXwFAES63udh0uGvwjuaJ/3Wq8Q7YA2hmLDtFR5PRIxEUnlg==}
+    peerDependencies:
+      vue: ^3.3.0
+
+  '@cp-vuedir/icons@0.1.7':
+    resolution: {integrity: sha512-jZXbaSrRTUAGiHZabwrF70TDIIU048sEY/VoMVzp//2FD+iG5ieYdOCAZvi5en++kC3y5Z7ohIinmJBi/jUGgQ==}
+    peerDependencies:
+      vue: ^3.0.0
 
   '@esbuild/aix-ppc64@0.25.0':
     resolution: {integrity: sha512-O7vun9Sf8DFjH2UtqK8Ku3LkquL9SZL8OLY1T5NZkA34+wG3OQF7cl4Ql8vdNzM6fzBbYfLaiRLIOZ+2FOCgBQ==}
@@ -699,6 +712,15 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
+
+  '@cp-vuedir/core@0.3.3(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      '@cp-vuedir/icons': 0.1.7(vue@3.5.13(typescript@5.7.3))
+      vue: 3.5.13(typescript@5.7.3)
+
+  '@cp-vuedir/icons@0.1.7(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      vue: 3.5.13(typescript@5.7.3)
 
   '@esbuild/aix-ppc64@0.25.0':
     optional: true

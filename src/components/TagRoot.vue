@@ -5,7 +5,7 @@ import {
   type TagContext,
   type TagNode,
 } from "../utils/tagging.ts";
-import { reactive, provide, onMounted, onBeforeUnmount } from "vue";
+import { reactive, provide, onMounted, onBeforeUnmount, type VNode } from "vue";
 
 const root = reactive<TagNode>({
   name: "__root__",
@@ -78,10 +78,35 @@ const getInstance = (path: string) => {
   return foundNode?.instance?.subTree?.children?.[0] || null;
 };
 
+const getAllTagElements = () => {
+  const elementToNode = new Map<HTMLElement, TagNode>();
+  const nodeToPath = new Map<TagNode, string>();
+
+  const traverse = (node: TagNode, currentPath: string[]) => {
+    const pathStr = currentPath.join(" ");
+    nodeToPath.set(node, pathStr);
+    const subTree = node.instance?.subTree;
+    if (subTree && Array.isArray(subTree.children)) {
+      subTree.children.forEach((child: VNode) => {
+        if (child.el instanceof HTMLElement) {
+          elementToNode.set(child.el, node);
+        }
+      });
+    }
+    node.children.forEach((child) =>
+      traverse(child, [...currentPath, child.name])
+    );
+  };
+
+  root.children.forEach((child) => traverse(child, [child.name]));
+  return { elementToNode, nodeToPath };
+};
+
 onMounted(() => {
   tagApi.value = {
     getElement,
     getInstance,
+    getAllTagElements,
   };
 });
 

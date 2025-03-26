@@ -4,11 +4,13 @@ import RootTag from "./components/TagRoot.vue";
 import Mask from "./components/Mask.vue";
 import InfoBox from "./components/InfoBox.vue";
 import Modal from "./components/Modal.vue";
+import TaggingSelector from "./components/TaggingSelector.vue";
 import { useTag } from "./utils/tagging";
 import { ref } from "vue";
 
 const { getElement, getInstance } = useTag();
 const visible = ref(false);
+const selectorActive = ref(false);
 const currentHighlightElementPath = ref("editorbox check");
 
 function handleCheck() {
@@ -79,6 +81,9 @@ function logInstance() {
               <Tag name="mask">
                 <button @click="visible = !visible">mask</button>
               </Tag>
+              <button @click="selectorActive = !selectorActive">
+                Toggle Selector
+              </button>
             </div>
             <Tag name="pre">
               <pre>
@@ -130,6 +135,7 @@ function logInstance() {
         </button>
       </div>
     </Mask>
+    <TaggingSelector :active="selectorActive" />
   </RootTag>
 </template>
 
