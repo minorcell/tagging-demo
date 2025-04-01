@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref, watch, onBeforeUnmount, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { useTag, type TagNode } from "../utils/tagging";
 
 const { getAllTagElements } = useTag();
 
-const props = defineProps<{
-  active: boolean;
+const emit = defineEmits<{
+  (e: "selected", path: string): void;
 }>();
 
 let elementToNode: Map<HTMLElement, TagNode> | null = null;
 let nodeToPath: Map<TagNode, string> | null = null;
 const currentPath = ref<string | null>(null);
 const currentElementRef = ref<HTMLElement | null>(null);
-const currentPathRef = ref<HTMLElement | null>(null);
 
 function findNearestTagElement(el: HTMLElement): HTMLElement | null {
   let current: HTMLElement | null = el;
@@ -27,18 +26,14 @@ function findNearestTagElement(el: HTMLElement): HTMLElement | null {
 
 function handleMouseOver(event: MouseEvent) {
   const target = event.target as HTMLElement;
-
   const tagElement = findNearestTagElement(target);
   if (tagElement) {
     const node = elementToNode?.get(tagElement);
-
     if (node) {
       currentPath.value = nodeToPath?.get(node) || "未知路径";
       nextTick(() => {
         if (currentElementRef.value) {
           createMaskToTaggedElement(tagElement);
-        } else {
-          console.error("currentElementRef is still null after nextTick");
         }
       });
     }
@@ -47,10 +42,22 @@ function handleMouseOver(event: MouseEvent) {
   }
 }
 
+function handleClick(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+  const tagElement = findNearestTagElement(target);
+  if (tagElement) {
+    const node = elementToNode?.get(tagElement);
+    if (node) {
+      const path = nodeToPath?.get(node) || "未知路径";
+      currentPath.value = path;
+      emit("selected", path);
+    }
+  }
+}
+
 function createMaskToTaggedElement(element: HTMLElement | null) {
   if (!element) return;
   const { left, top, width, height } = element.getBoundingClientRect();
-
   Object.assign(currentElementRef.value!.style, {
     left: `${left - 6}px`,
     top: `${top - 6}px`,
@@ -59,43 +66,27 @@ function createMaskToTaggedElement(element: HTMLElement | null) {
   });
 }
 
-function copyToClipboard(e: KeyboardEvent) {
-  if (currentPath.value && e.key === "c") {
-    navigator.clipboard.writeText(currentPath.value);
-  }
-}
-
-watch(
-  () => props.active,
-  (newVal) => {
-    if (newVal) {
-      const { elementToNode: eToNode, nodeToPath: nToPath } =
-        getAllTagElements();
-      elementToNode = eToNode;
-      nodeToPath = nToPath;
-      window.addEventListener("mouseover", handleMouseOver);
-      window.addEventListener("keydown", copyToClipboard);
-    } else {
-      window.removeEventListener("mouseover", handleMouseOver);
-      window.removeEventListener("keydown", copyToClipboard);
-      elementToNode = null;
-      nodeToPath = null;
-      currentPath.value = null;
-    }
-  },
-  { immediate: true }
-);
+onMounted(() => {
+  const { elementToNode: eToNode, nodeToPath: nToPath } = getAllTagElements();
+  elementToNode = eToNode;
+  nodeToPath = nToPath;
+  window.addEventListener("mouseover", handleMouseOver);
+  window.addEventListener("click", handleClick);
+});
 
 onBeforeUnmount(() => {
   window.removeEventListener("mouseover", handleMouseOver);
-  window.removeEventListener("keydown", copyToClipboard);
+  window.removeEventListener("click", handleClick);
+  elementToNode = null;
+  nodeToPath = null;
+  currentPath.value = null;
 });
 </script>
 
 <template>
-  <Teleport to="body" v-if="props.active">
+  <Teleport to="body">
     <div ref="currentElementRef" class="tagging-selector" v-if="currentPath">
-      <span ref="currentPathRef" class="current-path">{{ currentPath }}</span>
+      <span class="current-path">{{ currentPath }}</span>
     </div>
   </Teleport>
 </template>

@@ -10,7 +10,7 @@ import { ref } from "vue";
 
 const { getElement, getInstance } = useTag();
 const visible = ref(false);
-const selectorActive = ref(false);
+const active = ref(false);
 const currentHighlightElementPath = ref("editorbox check");
 
 function handleCheck() {
@@ -62,6 +62,10 @@ function logInstance() {
   const instance = getInstance("modal");
   console.log(instance);
 }
+
+function handleSelected(path: string) {
+  console.log("Selected path:", path);
+}
 </script>
 
 <template>
@@ -81,9 +85,7 @@ function logInstance() {
               <Tag name="mask">
                 <button @click="visible = !visible">mask</button>
               </Tag>
-              <button @click="selectorActive = !selectorActive">
-                Toggle Selector
-              </button>
+              <button @click="active = !active">Toggle Selector</button>
             </div>
             <Tag name="pre">
               <pre>
@@ -135,7 +137,7 @@ function logInstance() {
         </button>
       </div>
     </Mask>
-    <TagSelector :active="selectorActive" />
+    <TagSelector v-if="active" @selected="handleSelected" />
   </RootTag>
 </template>
 
