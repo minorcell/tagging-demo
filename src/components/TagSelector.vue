@@ -43,6 +43,7 @@ function handleMouseOver(event: MouseEvent) {
 }
 
 function handleClick(event: MouseEvent) {
+  event.stopPropagation();
   const target = event.target as HTMLElement;
   const tagElement = findNearestTagElement(target);
   if (tagElement) {
@@ -71,7 +72,7 @@ onMounted(() => {
   elementToNode = eToNode;
   nodeToPath = nToPath;
   window.addEventListener("mouseover", handleMouseOver);
-  window.addEventListener("click", handleClick);
+  window.addEventListener("click", handleClick, true);
 });
 
 onBeforeUnmount(() => {
